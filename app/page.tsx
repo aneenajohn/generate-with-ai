@@ -13,10 +13,10 @@ export default function Home() {
 
   return (
     <>
-      {/* <div className='grid min-h-screen overflow-hidden items-stretch gap-0'>
+      <div className='grid min-h-screen overflow-hidden items-stretch gap-0'>
         <header className='sticky top-0 z-50 bg-white border-b border-gray-100 backdrop-filter backdrop-blur-sm/20 py-2 md:py-4 dark:bg-gray-950 dark:border-gray-950'>
           <div className='container flex items-center justify-between px-4 md:px-6'>
-            <Link className='flex items-center space-x-2 font-medium' href='#'>
+            {/* <Link className='flex items-center space-x-2 font-medium' href='#'>
               <span className='h-6 w-6 overflow-hidden rounded-lg'>
                 <Image
                   alt='Logo'
@@ -63,24 +63,25 @@ export default function Home() {
               >
                 Music
               </Link>
-            </nav>
+            </nav> */}
             <div className='flex items-center space-x-4'>
+              {/* dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-950 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300' */}
               <Link
-                className='inline-flex h-10 items-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm space-x-2 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-950 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300'
+                className='inline-flex h-10 items-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm space-x-2'
                 href='/sign-in'
               >
-                <Button>Sign in</Button>
+                Sign in
               </Link>
               <Link
-                className='inline-flex h-10 items-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300'
+                className='inline-flex h-10 items-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors  focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50'
                 href='/sign-up'
               >
-                <Button>Sign up</Button>
+                Sign up
               </Link>
             </div>
           </div>
         </header>
-      </div> */}
+      </div>
     </>
   );
 }
