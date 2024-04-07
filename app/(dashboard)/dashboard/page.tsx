@@ -1,84 +1,86 @@
-import { Button } from '@/components/ui/button';
-// import { UserButton } from '@clerk/nextjs';
-import Link from 'next/link';
+'use client';
+import { useRouter } from 'next/navigation';
 
-{
-  /* <UserButton afterSignOutUrl='/' /> */
-}
+import { Card } from '@/components/ui/card';
+import {
+  ArrowRight,
+  MessageCircle,
+  CodeIcon,
+  ImageIcon,
+  Music2Icon,
+  VideoIcon,
+} from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
 export default function DashboardPage() {
+  const tools = [
+    {
+      label: 'Chat with AI',
+      href: '/chat',
+      color: 'text-purple-400',
+      bgColor: 'bg-purple-400/10',
+      icon: MessageCircle,
+    },
+    {
+      label: 'Music Generation',
+      icon: Music2Icon,
+      href: '/music',
+      color: 'text-primary',
+      bgColor: 'bg-primary/20',
+    },
+    {
+      label: 'Image Generation',
+      icon: ImageIcon,
+      color: 'text-pink-700',
+      bgColor: 'bg-pink-700/10',
+      href: '/image',
+    },
+    {
+      label: 'Video Generation',
+      icon: VideoIcon,
+      color: 'text-emerald-700',
+      bgColor: 'bg-emerald-700/10',
+      href: '/video',
+    },
+    {
+      label: 'Code Generation',
+      icon: CodeIcon,
+      color: 'text-orange-700',
+      bgColor: 'bg-orange-700/10',
+      href: '/code',
+    },
+  ];
+
+  const router = useRouter();
+
   return (
-    <>
-      <p>Dashboard</p>
-      <p>Chumma</p>
-      {/* <UserButton afterSignOutUrl='/' /> */}
-      {/* <div className='grid min-h-screen overflow-hidden items-stretch gap-0'>
-        <header className='sticky top-0 z-50 bg-white border-b border-gray-100 backdrop-filter backdrop-blur-sm/20 py-2 md:py-4 dark:bg-gray-950 dark:border-gray-950'>
-          <div className='container flex items-center justify-between px-4 md:px-6'>
-            <Link className='flex items-center space-x-2 font-medium' href='#'>
-              <span className='h-6 w-6 overflow-hidden rounded-lg'>
-                <img
-                  alt='Logo'
-                  className='rounded-lg object-contain'
-                  height='24'
-                  src='/placeholder.svg'
-                  style={{
-                    aspectRatio: '24/24',
-                    objectFit: 'cover',
-                  }}
-                  width='24'
-                />
-              </span>
-              <span className='sr-only'>Home</span>
-            </Link>
-            <nav className='hidden space-x-4 text-sm font-medium md:flex'>
-              <Link
-                className='inline-flex items-center h-10 px-1 border-b-2 border-transparent dark:text-gray-400'
-                href='#'
-              >
-                Code
-              </Link>
-              <Link
-                className='inline-flex items-center h-10 px-1 border-b-2 border-transparent dark:text-gray-400'
-                href='#'
-              >
-                Images
-              </Link>
-              <Link
-                className='inline-flex items-center h-10 px-1 border-b-2 border-transparent dark:text-gray-400'
-                href='#'
-              >
-                Conversations
-              </Link>
-              <Link
-                className='inline-flex items-center h-10 px-1 border-b-2 border-transparent dark:text-gray-400'
-                href='#'
-              >
-                Videos
-              </Link>
-              <Link
-                className='inline-flex items-center h-10 px-1 border-b-2 border-transparent dark:text-gray-400'
-                href='#'
-              >
-                Music
-              </Link>
-            </nav>
-            <div className='flex items-center space-x-4'>
-              <Link
-                className='inline-flex h-10 items-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm space-x-2 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-950 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300'
-                href='#'
-              >
-                Sign in
-              </Link>
-              <Link
-                className='inline-flex h-10 items-center rounded-md bg-gray-900 px-8 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300'
-                href='#'
-              >
-                Sign up
-              </Link>
+    <div>
+      <div className='mb-8 space-y-4'>
+        <h2 className='text-2xl md:text-4xl font-bold text-center text-primary'>
+          Ready to create with AI?
+        </h2>
+        <p className='text-muted-foreground font-light text-sm md:text-lg text-center'>
+          Your AI-powered creativity assistant
+        </p>
+      </div>
+      <div className='px-4 md:px-20 lg:px-32 space-y-4'>
+        {tools.map((tool) => (
+          <Card
+            key={tool.href}
+            className='p-4 border-black/5 flex justify-between items-center hover:shadow-md transition cursor-pointer'
+            onClick={() => router.push(tool.href)}
+          >
+            <div className='flex items-center gap-4'>
+              <div className={cn('p-2 w-fit rounded-md', tool.bgColor)}>
+                <tool.icon className={cn('w-8 h-8', tool.color)} />
+              </div>
+              <div className='font-semibold'>{tool.label}</div>
             </div>
-          </div>
-        </header>
-      </div> */}
-    </>
+            <ArrowRight className='w-5 h-5' />
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 }

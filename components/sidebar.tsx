@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Montserrat } from 'next/font/google';
 
 import { cn } from '@/lib/utils';
@@ -20,7 +21,8 @@ const montserrat = Montserrat({
   subsets: ['cyrillic', 'latin', 'vietnamese'],
 });
 
-const sidebar = () => {
+const Sidebar = () => {
+  const pathname = usePathname();
   const routes = [
     {
       label: 'Dashboard',
@@ -80,14 +82,21 @@ const sidebar = () => {
           </h1>
         </div>
       </Link>
-      <div className='space-y-1 px-4 py-4 h-full flex flex-col'>
+      <div className='space-y-1 px-2 py-3 h-full flex flex-col'>
         {routes.map((route, index) => (
           <Link
             href={route.href}
             key={route.href}
-            className={`w-full flex justify-start group text-sm font-medium hover:text-white hover:bg-white/10 rounded-md transition p-4 ${
-              index === routes.length - 1 ? 'flex-grow' : ''
-            }`}
+            // className={`w-full flex justify-start group text-sm font-medium hover:text-white hover:bg-white/10 rounded-md transition p-4 ${
+            //   index === routes.length - 1 ? 'flex-grow' : ''
+            // }`}
+            className={cn(
+              'w-full flex justify-start group text-sm font-medium hover:text-white hover:bg-white/10 rounded-md transition p-4',
+              //   index === routes.length - 1 ? 'flex-grow' : '',
+              pathname === route.href
+                ? 'bg-white/10 text-white'
+                : 'bg-slate-800'
+            )}
           >
             <div className={`flex flex-1 items-center h-full`}>
               <route.icon
@@ -102,4 +111,4 @@ const sidebar = () => {
   );
 };
 
-export default sidebar;
+export default Sidebar;
