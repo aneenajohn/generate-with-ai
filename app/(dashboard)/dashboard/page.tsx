@@ -9,6 +9,7 @@ import {
   ImageIcon,
   Music2Icon,
   VideoIcon,
+  BoltIcon,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -21,6 +22,13 @@ export default function DashboardPage() {
       color: 'text-purple-400',
       bgColor: 'bg-purple-400/10',
       icon: MessageCircle,
+    },
+    {
+      label: 'Animate Images',
+      href: '/animate',
+      color: 'text-blue-400',
+      bgColor: 'bg-blue-400/10',
+      icon: BoltIcon,
     },
     {
       label: 'Music Generation',

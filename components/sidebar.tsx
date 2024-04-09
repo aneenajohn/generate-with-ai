@@ -7,6 +7,7 @@ import { Montserrat } from 'next/font/google';
 
 import { cn } from '@/lib/utils';
 import {
+  BoltIcon,
   CodeIcon,
   ImageIcon,
   LayoutDashboard,
@@ -43,16 +44,22 @@ const Sidebar = () => {
       icon: ImageIcon,
     },
     {
-      label: 'Generate Videos',
-      href: '/video',
-      color: 'text-emerald-400',
-      icon: VideoIcon,
-    },
-    {
       label: 'Generate Code',
       href: '/code',
       color: 'text-orange-400',
       icon: CodeIcon,
+    },
+    {
+      label: 'Animate',
+      href: '/animate',
+      color: 'text-blue-400',
+      icon: BoltIcon,
+    },
+    {
+      label: 'Generate Videos',
+      href: '/video',
+      color: 'text-emerald-400',
+      icon: VideoIcon,
     },
     {
       label: 'Generate Music',
