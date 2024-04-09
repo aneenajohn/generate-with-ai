@@ -32,6 +32,12 @@ export async function POST(req: Request) {
     return NextResponse.json(response.choices[0].message);
   } catch (error) {
     errorLogger(String(error));
-    return new NextResponse(`Internal Error: ${error}`, { status: 500 });
+    const errorCode = (error as any).code;
+    console.log('chkkkkkkkkkkk:');
+    console.log(error );
+    console.log({ errorCode });
+    return new NextResponse(`Internal Error: ${error}`, {
+      status: 500,
+    });
   }
 }

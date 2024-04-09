@@ -71,14 +71,14 @@ const Sidebar = () => {
     <div className='text-secondary bg-slate-800 space-y-4 py-4 flex flex-col h-full'>
       <Link href='/dashboard' className='flex items-center pl-3'>
         <div className='relative w-14 h-14 mr-4 flex items-center'>
-          <Image alt='logo' src='/pippin-2.png' fill />
+          <Image alt='logo' src='/donut_logo.png' fill />
           <h1
             className={cn(
               'font-bold text-2xl pl-14 ml-2 align-middle text-primary',
               montserrat.className
             )}
           >
-            Dodo
+            Donut
           </h1>
         </div>
       </Link>
