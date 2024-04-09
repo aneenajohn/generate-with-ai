@@ -19,6 +19,8 @@ import Loader from '@/components/loader';
 import { formSchema } from './constants';
 import { errorLogger } from '@/lib/custom_utils';
 import { cn } from '@/lib/utils';
+import { UserAvatar } from '@/components/user_avatar';
+import { BotAvatar } from '@/components/bot_avatar';
 
 const ChatPage = () => {
   const router = useRouter();
@@ -53,6 +55,7 @@ const ChatPage = () => {
         messages: newMessage,
       });
 
+      console.log('Res: ', response);
       setMessages((currentMsg) => [...currentMsg, userMessage, response.data]);
       setApiError(null);
       form.reset();
@@ -147,6 +150,7 @@ const ChatPage = () => {
                       : 'bg-muted'
                   )}
                 >
+                  {msg.role === 'user' ? <UserAvatar /> : <BotAvatar />}
                   {msg.content}
                 </div>
               ))}
