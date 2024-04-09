@@ -1,14 +1,19 @@
 import OpenAI from 'openai';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
+import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 
-import { chatLogger, errorLogger } from '@/lib/custom_utils';
+import { errorLogger } from '@/lib/custom_utils';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// console.log({ openai });
+const instructionMessage: ChatCompletionMessageParam = {
+  role: 'system',
+  content:
+    "You're a code generator. Respond with code snippets formatted appropriately for the language requested in markdown. Include comments to explain your code where necessary.",
+};
 
 export async function POST(req: Request) {
   try {
@@ -32,7 +37,7 @@ export async function POST(req: Request) {
 
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
-      messages,
+      messages: [instructionMessage, ...messages],
     });
 
     return NextResponse.json(response.choices[0].message);

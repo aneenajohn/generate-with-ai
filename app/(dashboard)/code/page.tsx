@@ -6,8 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { MessageCircle } from 'lucide-react';
+import { CodeIcon } from 'lucide-react';
 import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
+import ReactMarkdowm from 'react-markdown';
 
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -22,7 +23,7 @@ import { cn } from '@/lib/utils';
 import { UserAvatar } from '@/components/user_avatar';
 import { BotAvatar } from '@/components/bot_avatar';
 
-const ChatPage = () => {
+const CodePage = () => {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -79,11 +80,11 @@ const ChatPage = () => {
   return (
     <div>
       <Heading
-        title='Chat with Donut AI'
-        description='Simulate AI-powered conversations with customizable characters and dialogues.'
-        icon={MessageCircle}
-        iconColor='text-purple-400'
-        bgColor='bg-purple-400/10'
+        title='Code with Donut AI'
+        description='Build everything with AI-powered code providing descriptive prompt'
+        icon={CodeIcon}
+        iconColor='text-orange-500'
+        bgColor='bg-orange-500/10'
       />
       <div className='px-4 lg:px-8'>
         <div>
@@ -103,7 +104,7 @@ const ChatPage = () => {
                           errors.prompt ? 'border-red-500 border' : ''
                         }`}
                         disabled={isSubmitting}
-                        placeholder='Ask me anything like Which came first - The chicken or the egg?'
+                        placeholder='AMA like Write Python code to parse a CSV file and extract specific data fields'
                         {...field}
                       />
                     </FormControl>
@@ -151,7 +152,24 @@ const ChatPage = () => {
                   )}
                 >
                   {msg.role === 'user' ? <UserAvatar /> : <BotAvatar />}
-                  {msg.content}
+                  <ReactMarkdowm
+                    components={{
+                      pre: ({ node, ...props }) => (
+                        <div className='overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg'>
+                          <pre {...props} />
+                        </div>
+                      ),
+                      code: ({ node, ...props }) => (
+                        <code
+                          className='bg-black/10 rounded-lg p-1'
+                          {...props}
+                        />
+                      ),
+                    }}
+                    className='text-sm overflow-hidden leading-7'
+                  >
+                    {msg.content || ''}
+                  </ReactMarkdowm>
                 </div>
               ))}
             {apiError && <div className='text-red-500'>{apiError}</div>}
@@ -162,4 +180,4 @@ const ChatPage = () => {
   );
 };
 
-export default ChatPage;
+export default CodePage;
