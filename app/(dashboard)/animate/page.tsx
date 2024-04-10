@@ -61,40 +61,57 @@ const ImagePage = () => {
   const id = useId();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // try {
+    //   setImages([]);
+    //   console.log({ values });
+    //   console.log('File: ', values.file);
+    //   const fileData = form.getValues('file');
+    //   console.log({ fileData });
+    //   console.log({ errors });
+
+    //   const file: File = form.getValues('file')[0];
+    //   console.log({ file });
+    //   // const response = await axios.post('/api/image ', values);
+    //   // const urls = response.data.map((image: { url: string }) => image.url);
+    //   // setImages(urls);
+
+    //   // console.log('Res: ', response);
+    //   // // setMessages((currentMsg) => [...currentMsg, userMessage, response.data]);
+    //   // setApiError(null);
+    //   // form.reset();
+
+    //   if (file) {
+    //     try {
+    //       // Create a new FormData object
+    //       const formData = new FormData();
+    
+    //       // Append the file to the FormData object
+    //       formData.append('file', file);
+    
+    //       // Send the FormData object to your API
+    //       const response = await axios.post('/api/animate', formData);
+    
+
+    //     } catch (error) {
+    //       // Handle network or other errors
+    //       console.error('Error uploading file:', error);
+    //     }
+    //   }
+    // } 
     try {
-      setImages([]);
-      console.log({ values });
-      console.log('File: ', values.file);
-      const fileData = form.getValues('file');
-      console.log({ fileData });
-      console.log({ errors });
+      const formData = new FormData();
+      formData.append('file', values.file[0]);
 
-      const file: File = form.getValues('file')[0];
-      console.log({ file });
+      const response = await axios.post('/api/animate', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const base64String: string = reader.result as string;
-          console.log('Base64 Image:', base64String);
-        };
-
-        reader.onerror = () => {
-          console.error('Error occurred while reading the file.');
-        };
-        // Read the file as a data URL (base64 encoded)
-        reader.readAsDataURL(file);
-      }
-      // event.target?.files?.[0]
-      // const response = await axios.post('/api/image ', values);
-      // const urls = response.data.map((image: { url: string }) => image.url);
-      // setImages(urls);
-
-      // console.log('Res: ', response);
-      // // setMessages((currentMsg) => [...currentMsg, userMessage, response.data]);
-      // setApiError(null);
-      // form.reset();
-    } catch (error: any) {
+      // Handle response
+      console.log(response.data);
+    }
+    catch (error: any) {
       errorLogger(String(error));
       setApiError(String(error));
       // setMessages([]);
