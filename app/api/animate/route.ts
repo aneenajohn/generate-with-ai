@@ -22,22 +22,6 @@ const OPENAI_USER_PROMPT =
 const prefix =
   'Create a 3D rendered image of a stylized cartoon character based on following prompt';
 
-async function generateImage(prompt) {
-  const response = await fetch('/api/image/route', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ prompt }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  return response;
-}
-
 export async function POST(req: Request) {
   async function getImageDetails(base64Image: string) {
     const response = await openai.chat.completions.create({

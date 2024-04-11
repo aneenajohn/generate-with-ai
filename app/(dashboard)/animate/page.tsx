@@ -124,7 +124,7 @@ const ImagePage = () => {
       //   .catch((err) => console.log(err));
 
       await convertBase64(file)
-        .then(async (base64Data) => {
+        .then(async (base64Data: any) => {
           const formData = new FormData();
           formData.append('base64Image', base64Data);
 
