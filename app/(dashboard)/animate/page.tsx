@@ -3,11 +3,11 @@
 import React, { useState, useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { any, z } from 'zod';
+import { z } from 'zod';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Download, ImageIcon } from 'lucide-react';
-import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 
 import {
   Form,
@@ -19,22 +19,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Heading from '@/components/heading';
-import {
-  Select,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-} from '@/components/ui/select';
 
 import NoData from '@/components/no_data';
 import Loader from '@/components/loader';
 
 import { formSchema } from './constants';
 import { errorLogger } from '@/lib/custom_utils';
-import { cn } from '@/lib/utils';
 import { Card, CardFooter } from '@/components/ui/card';
-import Image from 'next/image';
 
 const ImagePage = () => {
   const router = useRouter();
@@ -204,9 +195,10 @@ const ImagePage = () => {
                       />
                     </FormControl>
                     <FormMessage />
-                    {errors.file && (
+                    {errors.file && errors.file.message && (
                       <span className='text-red-500 text-sm'>
-                        <p>{errors?.file?.message}</p>
+                        {/* <p>{errors.file.message}</p> */}
+                        <p>Image file is required</p>
                       </span>
                     )}
                   </FormItem>
