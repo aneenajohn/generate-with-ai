@@ -197,8 +197,7 @@ const ImagePage = () => {
                     <FormMessage />
                     {errors.file && errors.file.message && (
                       <span className='text-red-500 text-sm'>
-                        {/* <p>{errors.file.message}</p> */}
-                        <p>Image file is required</p>
+                        <p>{String(errors.file.message)}</p>
                       </span>
                     )}
                   </FormItem>
