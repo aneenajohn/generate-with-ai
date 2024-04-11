@@ -74,24 +74,32 @@ const ImagePage = () => {
 
       const formData = new FormData();
 
-      formData.append('file', values.file[0]);
+      formData.append('file', file);
       formData.append(
         'prompt',
-        'Create a 3D rendered image of a stylized cartoon character of the given image'
+        'You are an expert image analyst. You can extract accurate information from an image. Your Job is to accept an image which can be a photo of a human and Convert the given image into a 3D rendered image of a stylized cartoon character'
       );
+      formData.append('size', '512x512');
 
       console.log({ formData });
       let uploadedFile = values.file[0];
       console.log('Name: ', uploadedFile.name);
 
-      const response = await axios.post('/api/animate', {
-        file: uploadedFile.name,
-        prompt:
-          'Create a 3D rendered image of a stylized cartoon character of the given image',
-        size: '512x512',
+      // const response = await axios.post('/api/animate', {
+      //   file: uploadedFile.name,
+      //   prompt:
+      //     'Create a 3D rendered image of a stylized cartoon character of the given image',
+      //   size: '512x512',
+      // });
+
+      const response = await axios.post('/api/animate', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       console.log('The edit res:', response.data);
+
       // const response = await axios.post('/api/image ', values);
       // const urls = response.data.map((image: { url: string }) => image.url);
       // setImages(urls);

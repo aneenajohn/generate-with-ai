@@ -1,8 +1,9 @@
 import OpenAI from 'openai';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
-// import { IncomingForm } from 'formidable';
+// import formidable from 'formidable';
 import { createReadStream } from 'fs';
+import { join } from 'path';
 
 import { errorLogger } from '@/lib/custom_utils';
 
@@ -10,8 +11,36 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+interface UploadableFile {
+  content: Buffer;
+  lastModified: number;
+  name: string;
+  size: number;
+  type: string;
+}
 // console.log({ openai });
-
+function fileToBuffer(file: File): Promise<UploadableFile> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        resolve({
+          content: Buffer.from(reader.result),
+          lastModified: file.lastModified,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        });
+      } else {
+        reject(new Error('File reader result is not a string'));
+      }
+    };
+    reader.onerror = () => {
+      reject(reader.error);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
 export async function POST(req: Request) {
   try {
     const { userId } = auth();
@@ -20,13 +49,15 @@ export async function POST(req: Request) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const body = await req.json();
-    const { file, prompt, size = '512x512' } = body;
+    const body = await req.formData();
+    const file = body.get('file') as File;
+    const prompt = body.get('prompt') as string;
+    const size = body.get('size');
 
     console.log({ file, prompt, size });
 
-    if (!prompt) {
-      return new NextResponse('Image prompt are required', { status: 400 });
+    if (!file) {
+      return new NextResponse('file is required', { status: 400 });
     }
 
     if (!prompt) {
@@ -39,73 +70,31 @@ export async function POST(req: Request) {
       });
     }
 
-    const response = await openai.images.edit({
-      image: createReadStream(file) as unknown as File,
-      prompt,
-      size,
-    });
+    // const response = await openai.images.edit({
+    // image: createReadStream(file) as unknown as File,
+    //   // image: file,
+    // image: imageStream,
+    //   prompt,
+    //   size,
+    // });
 
+    // const fileStream = createReadStream(file);
+
+    const sizeOfImage = '512x512';
+
+    // const imagePath = join(__dirname, 'aneena.png');
+    // path.join(__dirname, 'cool.txt');
+
+    const imagePath = 'app/api/animate/aneena.png';
+    const response = await openai.images.edit({
+      // image: await fileToBuffer(file),
+      image: createReadStream(imagePath),
+      mask: createReadStream(imagePath),
+      prompt,
+      size: sizeOfImage,
+    });
     console.log('Edit result:', response.data);
     return NextResponse.json(response.data);
-
-    // const form = new IncomingForm();
-    // let uploadedFile: any;
-
-    // OLD
-    // Parse form data
-    // form.onPart = function (part) {
-    //   if (!part.filename) {
-    //     form.handlePart(part);
-    //   } else {
-    //     part.on('data', (data) => {
-    //       uploadedFile = data;
-    //     });
-    //   }
-    // };
-
-    // form.parse(req, async (err, fields, files) => {
-    //   if (err) {
-    //     console.error('Error parsing form data:', err);
-    //     return new NextResponse(`Internal Error: ${err}`, { status: 500 });
-    //   }
-
-    //   if (!uploadedFile) {
-    //     return new NextResponse('Image is required', { status: 400 });
-    //   }
-
-    //   if (!openai.apiKey) {
-    //     return new NextResponse('OpenAI API key is missing', { status: 500 });
-    //   }
-    // OLD
-
-    //   // Use 'uploadedFile' for further processing, such as passing it to OpenAI API
-    //   // Example:
-    //   const response = await openai.images.edit({
-    //     image: uploadedFile,
-    //     prompt: 'Create a 3D rendered image of a stylized cartoon character of the given image',
-    //   });
-
-    //   // Return the response
-    //   return new NextResponse('Success', { status: 200 });
-    // });
-
-    // if (!formData) {
-    //   return new NextResponse('Image is required', { status: 400 });
-    // }
-
-    // if (!openai.apiKey) {
-    //   return new NextResponse('OpenAI api key is missing', {
-    //     status: 500,
-    //   });
-    // }
-
-    // const response = await openai.images.generate({
-    //   prompt,
-    //   n: parseInt(count, 10),
-    //   size: resolution,
-    // });
-
-    // return NextResponse.json(response.data);
   } catch (error) {
     errorLogger(String(error));
     const errorCode = (error as any).code;
