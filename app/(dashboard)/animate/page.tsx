@@ -61,57 +61,81 @@ const ImagePage = () => {
   const id = useId();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // try {
-    //   setImages([]);
-    //   console.log({ values });
-    //   console.log('File: ', values.file);
-    //   const fileData = form.getValues('file');
-    //   console.log({ fileData });
-    //   console.log({ errors });
-
-    //   const file: File = form.getValues('file')[0];
-    //   console.log({ file });
-    //   // const response = await axios.post('/api/image ', values);
-    //   // const urls = response.data.map((image: { url: string }) => image.url);
-    //   // setImages(urls);
-
-    //   // console.log('Res: ', response);
-    //   // // setMessages((currentMsg) => [...currentMsg, userMessage, response.data]);
-    //   // setApiError(null);
-    //   // form.reset();
-
-    //   if (file) {
-    //     try {
-    //       // Create a new FormData object
-    //       const formData = new FormData();
-    
-    //       // Append the file to the FormData object
-    //       formData.append('file', file);
-    
-    //       // Send the FormData object to your API
-    //       const response = await axios.post('/api/animate', formData);
-    
-
-    //     } catch (error) {
-    //       // Handle network or other errors
-    //       console.error('Error uploading file:', error);
-    //     }
-    //   }
-    // } 
     try {
-      const formData = new FormData();
-      formData.append('file', values.file[0]);
+      setImages([]);
+      console.log({ values });
+      console.log('File: ', values.file);
+      const fileData = form.getValues('file');
+      console.log({ fileData });
+      console.log({ errors });
 
-      const response = await axios.post('/api/animate', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const file: File = form.getValues('file')[0];
+      console.log({ file });
+
+      const formData = new FormData();
+
+      formData.append('file', values.file[0]);
+      formData.append(
+        'prompt',
+        'Create a 3D rendered image of a stylized cartoon character of the given image'
+      );
+
+      console.log({ formData });
+      let uploadedFile = values.file[0];
+      console.log('Name: ', uploadedFile.name);
+
+      const response = await axios.post('/api/animate', {
+        file: uploadedFile.name,
+        prompt:
+          'Create a 3D rendered image of a stylized cartoon character of the given image',
+        size: '512x512',
       });
 
-      // Handle response
-      console.log(response.data);
-    }
-    catch (error: any) {
+      console.log('The edit res:', response.data);
+      // const response = await axios.post('/api/image ', values);
+      // const urls = response.data.map((image: { url: string }) => image.url);
+      // setImages(urls);
+
+      // console.log('Res: ', response);
+      // // setMessages((currentMsg) => [...currentMsg, userMessage, response.data]);
+      // setApiError(null);
+      // form.reset();
+
+      //   if (file) {
+      //     try {
+      //       // Create a new FormData object
+      //       const formData = new FormData();
+
+      //       // Append the file to the FormData object
+      //       formData.append('file', file);
+
+      //       // Send the FormData object to your API
+      //       const response = await axios.post('/api/animate', formData);
+
+      //     } catch (error) {
+      //       // Handle network or other errors
+      //       console.error('Error uploading file:', error);
+      //     }
+      //   }
+      // }
+      //   try {
+      //     const formData = new FormData();
+
+      //     formData.append('file', values.file[0]);
+      //     formData.append(
+      //       'prompt',
+      //       'Create a 3D rendered image of a stylized cartoon character of the given image'
+      //     );
+
+      //     const response = await axios.post('/api/animate', formData, {
+      //       headers: {
+      //         'Content-Type': 'multipart/form-data',
+      //       },
+      //     });
+
+      //     // Handle response
+      //     console.log(response.data);
+    } catch (error: any) {
       errorLogger(String(error));
       setApiError(String(error));
       // setMessages([]);
