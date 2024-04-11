@@ -72,14 +72,6 @@ const ImagePage = () => {
       };
     });
   };
-
-  function cropString(str: string) {
-    if (str.length > 999) {
-      return str.substring(0, 999);
-    }
-    return str;
-  }
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setImages([]);
@@ -129,18 +121,7 @@ const ImagePage = () => {
           formData.append('base64Image', base64Data);
 
           const response = await axios.post('/api/animate', formData);
-          if (response.status == 200) {
-            const prefix = 'Create a 3D cartoonified image of ';
-            let prompt = cropString(prefix + response.data);
-            const resp = await axios.post('/api/image ', {
-              prompt,
-              n: 1,
-              size: '512x512',
-            });
-            const urls = resp.data.map((image: { url: string }) => image.url);
-            setImages(urls);
-            console.log(urls);
-          }
+          console.log('API response:', response);
         })
         .catch((err) => console.log(err));
 
@@ -170,9 +151,10 @@ const ImagePage = () => {
 
   return (
     <div>
+      <img alt='chumma' src='' />
       <Heading
-        title='Cartoonize with Donut AI'
-        description='Transform your photos into lively animated avatars'
+        title='Visualize with Donut AI'
+        description='Instantly create custom images tailored to your needs with our intuitive image generator tool.'
         icon={ImageIcon}
         iconColor='text-pink-400'
         bgColor='bg-pink-400/10'
@@ -187,7 +169,7 @@ const ImagePage = () => {
               <FormField
                 name='prompt'
                 render={({ field }) => (
-                  <FormItem className='col-span-12 lg:col-span-10'>
+                  <FormItem className='col-span-12 lg:col-span-6'>
                     <FormControl className='m-0 p-0'>
                       <Input
                         // className='border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent'
@@ -235,10 +217,10 @@ const ImagePage = () => {
             </div>
           )}
           {/* Response from gpt */}
-          <div className='gap-4 mt-8 w-full flex place-items-center'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8'>
             {images.map((image) => (
               <Card key={image} className='rounded-lg overflow-hidden'>
-                <div className='relative aspect-square w-full'>
+                <div className='relative aspect-square'>
                   <Image alt='ai generated image' fill src={image} />
                 </div>
                 <CardFooter className='p-2'>
