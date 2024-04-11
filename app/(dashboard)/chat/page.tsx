@@ -151,7 +151,7 @@ const ChatPage = () => {
                   )}
                 >
                   {msg.role === 'user' ? <UserAvatar /> : <BotAvatar />}
-                  {msg.content}
+                  <p>{String(msg.content)}</p>
                 </div>
               ))}
             {apiError && <div className='text-red-500'>{apiError}</div>}

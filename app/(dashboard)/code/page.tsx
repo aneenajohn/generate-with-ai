@@ -168,7 +168,7 @@ const CodePage = () => {
                     }}
                     className='text-sm overflow-hidden leading-7'
                   >
-                    {msg.content || ''}
+                    {String(msg.content)}
                   </ReactMarkdowm>
                 </div>
               ))}
