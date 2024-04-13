@@ -23,7 +23,7 @@ import Heading from '@/components/heading';
 import NoData from '@/components/no_data';
 import Loader from '@/components/loader';
 
-import { formSchema } from './constants';
+import { formSchema, convertBase64, cropString } from './constants';
 import { errorLogger } from '@/lib/custom_utils';
 import { Card, CardFooter } from '@/components/ui/card';
 
@@ -51,26 +51,6 @@ const ImagePage = () => {
 
   const id = useId();
 
-  const convertBase64 = (file: File) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
-
-  function cropString(str: string) {
-    if (str.length > 999) {
-      return str.substring(0, 999);
-    }
-    return str;
-  }
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setImages([]);
@@ -85,60 +65,26 @@ const ImagePage = () => {
 
       const file: File = values.file[0];
 
-      // const response = await axios.post('/api/animate', {
-      //   file: uploadedFile.name,
-      // });
-
-      // const reader = new FileReader();
-      // reader.readAsDataURL(file);
-      // reader.onload = async () => {
-      //   const base64Data = reader.result?.toString().split(',')[1];
-
-      //   console.log({ base64Data });
-      //   const formData = new FormData();
-      //   formData.append('base64Image', base64Data); // Append base64 data to formData
-
-      //   // Make API call
-      //   // const response = await axios.post('/api/animate', {
-      //   //   file: formData,
-      //   // });
-
-      //   // console.log('The edit res:', response.data);
-      // };
-
-      // await convertBase64(file)
-      //   .then((res) => (
-      //     const response = await axios.post('/api/animate', {
-      //       file: formData,
-      //     });
-      //   ))
-      //   .catch((err) => console.log(err));
-
       await convertBase64(file)
         .then(async (base64Data: any) => {
           const formData = new FormData();
           formData.append('base64Image', base64Data);
 
-          const response = await axios.post('/api/animate', formData);
-          if (response.status == 200) {
-            const prefix = 'Create a 3D cartoonified image of ';
-            let prompt = cropString(prefix + response.data);
-            const resp = await axios.post('/api/image ', {
-              prompt,
-              n: 1,
-              size: '512x512',
-            });
-            const urls = resp.data.map((image: { url: string }) => image.url);
-            setImages(urls);
-            console.log(urls);
-          }
+          // const response = await axios.post('/api/animate', formData);
+          // if (response.status == 200) {
+          //   const prefix = 'Create a 3D cartoonified image of ';
+          //   let prompt = cropString(prefix + response.data);
+          //   const resp = await axios.post('/api/image ', {
+          //     prompt,
+          //     n: 1,
+          //     size: '512x512',
+          //   });
+          //   const urls = resp.data.map((image: { url: string }) => image.url);
+          //   setImages(urls);
+          //   console.log(urls);
+          // }
         })
         .catch((err) => console.log(err));
-
-      // const base64 = await convertBase64(file);
-      // console.log({ base64 });
-
-      // console.log('The edit res:', response.data);
     } catch (error: any) {
       errorLogger(String(error));
       setApiError(String(error));
