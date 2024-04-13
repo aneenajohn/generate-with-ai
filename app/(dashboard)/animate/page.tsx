@@ -7,6 +7,10 @@ import { z } from 'zod';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { UploadDropzone } from '@bytescale/upload-widget-react';
+import { UploadWidgetConfig } from '@bytescale/upload-widget';
+import { UrlBuilder } from '@bytescale/sdk';
+
 import { Download, ImageIcon } from 'lucide-react';
 
 import {
@@ -40,6 +44,8 @@ const ImagePage = () => {
   const fileRef = form.register('file', { required: true });
 
   const [images, setImages] = useState<string[]>([]);
+  const [imageName, setImageName] = useState<string | null>(null);
+  const [originalImageUrl, setOriginalImageUrl] = useState<string | null>(null);
 
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -50,6 +56,42 @@ const ImagePage = () => {
   } = form;
 
   const id = useId();
+
+  const options: UploadWidgetConfig = {
+    apiKey: !!process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+      ? process.env.NEXT_PUBLIC_UPLOAD_API_KEY
+      : 'free',
+    maxFileCount: 1,
+    mimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
+    editor: { images: { crop: false } },
+    styles: { colors: { primary: '#000' } },
+  };
+
+  const UploadDropZone = () => (
+    <UploadDropzone
+      options={options}
+      onUpdate={({ uploadedFiles }) => {
+        if (uploadedFiles.length !== 0) {
+          const image = uploadedFiles[0];
+          const imageName = image.originalFile.originalFileName;
+          const imageUrl = UrlBuilder.url({
+            accountId: image.accountId,
+            filePath: image.filePath,
+            options: {
+              transformation: 'preset',
+              transformationPreset: 'thumbnail',
+            },
+          });
+          setImageName(imageName);
+          console.log({ imageUrl });
+          setOriginalImageUrl(imageUrl);
+          // generatePhoto(imageUrl);
+        }
+      }}
+      width='100%'
+      height='250px'
+    />
+  );
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -116,63 +158,37 @@ const ImagePage = () => {
       />
       <div className='px-4 lg:px-8'>
         <div>
-          <Form {...form}>
-            <form
-              // onSubmit={handleSubmit(onSubmit)}
-              className='w-full grid grid-cols-12 gap-2 focus-within:shadow-sm border rounded-lg py-4 px-3 md:px-6 cursor-pointer'
-            >
-              <FormField
-                name='prompt'
-                render={({ field }) => (
-                  <FormItem className='col-span-12 lg:col-span-10'>
-                    <FormControl className='m-0 p-0'>
-                      <Input
-                        // className='border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent'
-                        className={`border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent pl-2 ${
-                          errors.file ? 'border-red-500 border' : ''
-                        }`}
-                        disabled={isSubmitting}
-                        placeholder='upload image'
-                        type='file'
-                        accept='image/*'
-                        multiple={false}
-                        {...field}
-                        {...fileRef}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    {errors.file && errors.file.message && (
-                      <span className='text-red-500 text-sm'>
-                        <p>{String(errors.file.message)}</p>
-                      </span>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <Button
-                className='col-span-12 lg:col-span-2 w-full'
-                // disabled={isLoading}
-                disabled={isSubmitting}
-                type='button'
-                onClick={handleGenerateClick}
-              >
-                Generate
-              </Button>
-            </form>
-          </Form>
+          <UploadDropZone />
+          <Button
+            className='col-span-12 lg:col-span-2 w-full'
+            // disabled={isLoading}
+            disabled={isSubmitting}
+            type='button'
+            onClick={handleGenerateClick}
+          >
+            Generate
+          </Button>
         </div>
-        <div className='space-y-4 my-4'>
-          {/* Empty comp */}
-          {images.length === 0 && !isSubmitting && (
+
+        {originalImageUrl ? (
+          <div className='w-1/2 h-1/2 m-4 relative'>
+            <Image fill alt='user uploaded iamge' src={originalImageUrl} />
+          </div>
+        ) : (
+          <></>
+        )}
+        {/* <div className='space-y-4 my-4'> */}
+        {/* Empty comp */}
+        {/* {images.length === 0 && !isSubmitting && (
             <NoData label='Ask, and you shall receive! Type in your query and hit Generate' />
           )}
           {isSubmitting && (
             <div className='w-full flex place-items-center'>
               <Loader />
             </div>
-          )}
-          {/* Response from gpt */}
-          <div className='gap-4 mt-8 w-full flex place-items-center'>
+          )} */}
+        {/* Response from gpt */}
+        {/* <div className='gap-4 mt-8 w-full flex place-items-center'>
             {images.map((image) => (
               <Card key={image} className='rounded-lg overflow-hidden'>
                 <div className='relative aspect-square w-full'>
@@ -190,11 +206,58 @@ const ImagePage = () => {
                 </CardFooter>
               </Card>
             ))}
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
       </div>
     </div>
   );
 };
 
 export default ImagePage;
+
+{
+  /* <Form {...form}>
+<form
+  // onSubmit={handleSubmit(onSubmit)}
+  className='w-full grid grid-cols-12 gap-2 focus-within:shadow-sm border rounded-lg py-4 px-3 md:px-6 cursor-pointer'
+>
+  <FormField
+    name='prompt'
+    render={({ field }) => (
+      <FormItem className='col-span-12 lg:col-span-10'>
+        <FormControl className='m-0 p-0'>
+          <Input
+            // className='border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent'
+            className={`border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent pl-2 ${
+              errors.file ? 'border-red-500 border' : ''
+            }`}
+            disabled={isSubmitting}
+            placeholder='upload image'
+            type='file'
+            accept='image/*'
+            multiple={false}
+            {...field}
+            {...fileRef}
+          />
+        </FormControl>
+        <FormMessage />
+        {errors.file && errors.file.message && (
+          <span className='text-red-500 text-sm'>
+            <p>{String(errors.file.message)}</p>
+          </span>
+        )}
+      </FormItem>
+    )}
+  />
+  <Button
+    className='col-span-12 lg:col-span-2 w-full'
+    // disabled={isLoading}
+    disabled={isSubmitting}
+    type='button'
+    onClick={handleGenerateClick}
+  >
+    Generate
+  </Button>
+</form>
+</Form> */
+}
