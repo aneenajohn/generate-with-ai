@@ -15,6 +15,7 @@ import {
   Music2Icon,
   SettingsIcon,
   VideoIcon,
+  CaptionsIcon,
 } from 'lucide-react';
 
 const montserrat = Montserrat({
@@ -36,6 +37,12 @@ const Sidebar = () => {
       href: '/chat',
       color: 'text-purple-400',
       icon: MessageCircle,
+    },
+    {
+      label: 'Transcribe',
+      href: '/transcribe-videos',
+      color: 'text-cyan-200',
+      icon: CaptionsIcon,
     },
     {
       label: 'Generate Images',
