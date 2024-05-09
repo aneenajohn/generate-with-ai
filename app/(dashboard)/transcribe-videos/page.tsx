@@ -16,7 +16,7 @@ import Heading from '@/components/heading';
 import NoData from '@/components/no_data';
 import Loader from '@/components/loader';
 
-import { formSchema } from './constants';
+import { formSchema, TRANSCRIPTION_URL, LANG } from './constants';
 import { errorLogger } from '@/lib/custom_utils';
 import { cn } from '@/lib/utils';
 import { UserAvatar } from '@/components/user_avatar';
@@ -49,14 +49,21 @@ const ChatPage = () => {
         role: 'user',
         content: values.prompt,
       };
-      const newMessage = [...messages, userMessage];
+      const createData = `lang=${LANG}&remotePath=${values.prompt}`;
 
-      const response = await axios.post('/api/chat', {
-        messages: newMessage,
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': createData.length,
+        keyId: process.env.SPEECHFLOW_KEY_ID,
+        keySecret: process.env.SPEECHFLOW_KEY_SECRET,
+      };
+
+      const response = await axios.post(TRANSCRIPTION_URL, createData, {
+        headers,
       });
 
       console.log('Res: ', response);
-      setMessages((currentMsg) => [...currentMsg, userMessage, response.data]);
+      setMessages((currentMsg) => [...currentMsg, response.data]);
       setApiError(null);
       form.reset();
     } catch (error: any) {
